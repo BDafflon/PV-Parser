@@ -33,14 +33,22 @@ def parseFile(directory,file):
     for i,v in enumerate(dataContent):
         dataDict={}
         dataDict['message']=[]
+        messageDict={}
+        metaDict={}
         for j in v:
 
             if len(j)>1:
+                if not is_date(j[0]):
+                    metaDict[j[0]]=j[1]
+
+        for j in v:
+            if len(j) > 1:
                 if is_date(j[0]):
                     if 'Erreur' in j[1]:
-                        dataDict['message'].append({'date':j[0],'message':j[1]})
-                else:
-                    dataDict[j[0]]=j[1]
+                        d4 = dict(metaDict)
+                        d4.update({'date': j[0], 'message': j[1]})
+                        dataDict['message'].append(d4)
+
         data['Test'].append(dataDict)
     return data
 
@@ -49,6 +57,7 @@ def log(dir, data):
     f = open(join(dir,"extract.json"),'w')
     json.dump(data, f)
     f.close()
+
 
 
 if __name__ == '__main__':
